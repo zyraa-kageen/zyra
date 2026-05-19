@@ -37,6 +37,93 @@
       ]
     },
     {
+  "name": "Anime",
+  "items": [
+    {
+      "name": "Anime Home",
+      "desc": "Get latest ongoing & completed anime",
+      "path": "/anime/home",
+      "status": "ready"
+    },
+    {
+      "name": "Anime Schedule",
+      "desc": "Get anime schedule",
+      "path": "/anime/schedule",
+      "status": "ready"
+    },
+    {
+      "name": "Anime Detail",
+      "desc": "Get anime detail by slug",
+      "path": "/anime/detail?slug=",
+      "status": "ready",
+      "params": {
+        "slug": "Anime slug (e.g. akamoto-day-part-2-sub-indo)"
+      }
+    },
+    {
+      "name": "Anime Completed",
+      "desc": "Get list of completed anime",
+      "path": "/anime/completed?page=",
+      "status": "ready",
+      "params": {
+        "page": "Page number (default: 1)"
+      }
+    },
+    {
+      "name": "Anime Ongoing",
+      "desc": "Get list of ongoing anime",
+      "path": "/anime/ongoing?page=",
+      "status": "ready",
+      "params": {
+        "page": "Page number (default: 1)"
+      }
+    },
+    {
+      "name": "Anime Genre List",
+      "desc": "Get all available genres",
+      "path": "/anime/genres",
+      "status": "ready"
+    },
+    {
+      "name": "Anime by Genre",
+      "desc": "Get anime filtered by genre",
+      "path": "/anime/genre?slug=",
+      "status": "ready",
+      "params": {
+        "slug": "Genre slug (e.g. action)",
+        "page": "Page number (default: 1)"
+      }
+    },
+    {
+      "name": "Anime Search",
+      "desc": "Search anime by keyword",
+      "path": "/anime/search?keyword=",
+      "status": "ready",
+      "params": {
+        "keyword": "Search keyword (e.g. naruto)"
+      }
+    },
+    {
+      "name": "Anime Episode",
+      "desc": "Get episode detail & download links",
+      "path": "/anime/episode?slug=",
+      "status": "ready",
+      "params": {
+        "slug": "Episode slug (e.g. sd-p2-episode-10-sub-indo)"
+      }
+    },
+    {
+      "name": "Anime Batch",
+      "desc": "Get batch download links",
+      "path": "/anime/batch?slug=",
+      "status": "ready",
+      "params": {
+        "slug": "Batch slug (e.g. jshk-s2-batch-sub-indo)"
+      }
+    }
+  ]
+    },
+    {
       "name": "Search Tools",
       "items": [
         {
