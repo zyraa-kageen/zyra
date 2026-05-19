@@ -10,7 +10,7 @@ async function fetchJson(url) {
             }
         });
         // buang field creator/source, ambil data aja
-        const { creator, source, author, credit, statusCode, statusMessage, message, ok,...clean } = data;
+        const { creator, source, author, credit, statusCode, statusMessage, message, status, ok,...clean } = data;
         return clean;
     } catch (error) {
         console.error(`Error fetching ${url}:`, error);
