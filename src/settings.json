@@ -7,7 +7,7 @@
     "status": "Online!"
   },
   "apiSettings": {
-    "creator": "zyraa", 
+    "creator": "zyraa",
     "apikey": ["princes-zyra"]
   },
   "categories": [
@@ -17,7 +17,7 @@
         {
           "name": "LuminAI",
           "desc": "Talk with luminai",
-          "path": "/ai/luminai?text=",
+          "path": "/ai/luminai?text= ",
           "status": "ready",
           "params": {
             "text": "Text for luminai to respond to"
@@ -31,10 +31,38 @@
         {
           "name": "Blue Archive",
           "desc": "Blue Archive Random Images",
-          "path": "/random/ba",
+          "path": "/random/ba ",
           "status": "ready"
         }
       ]
+    },
+    {
+      "name": "Search Tools",
+      "items": [
+        {
+          "name": "YouTube",
+          "desc": "Video search",
+          "path": "/search/youtube?q= ",
+          "status": "ready",
+          "params": {
+            "q": "Search query"
+          }
+        },
+        {
+          "name": "TikTok Search",
+          "desc": "Search TikTok videos by keyword",
+          "path": "/search/tiktok?q= ",
+          "status": "ready",
+          "params": {
+            "q": "Search keyword",
+            "count": "Number of results (default: 12)"
+          }
+        }
+        
+      ]
+    } 
+  ]
+}      ]
     },
     {
       "name": "Search Tools",
