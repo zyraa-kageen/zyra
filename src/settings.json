@@ -35,8 +35,6 @@
           "status": "ready"
         }
       ]
-    }
-  ]
     },
     {
       "name": "Search Tools",
@@ -51,8 +49,8 @@
           }
         }
       ]
-        },
-      {
+    },
+    {
       "name": "TikTok Search",
       "desc": "Search TikTok videos by keyword",
       "path": "/search/tiktok?q=",
@@ -62,7 +60,8 @@
         "count": "Number of results (default: 12)"
       }
     }
-      ]
-    }               
+    
+                                                      
   ]
 }
+
