@@ -1,0 +1,54 @@
+{
+  "name": "Rimuru Api",
+  "version": "v1.0.0",
+  "description": "yang simple simple aja",
+  "bannerImage": "/src/banner.jpg",
+  "header": {
+    "status": "Online!"
+  },
+  "apiSettings": {
+    "creator": "zyraa", 
+    "apikey": ["princes-zyra"]
+  },
+  "categories": [
+    {
+      "name": "Artificial Intelligence",
+      "items": [
+        {
+          "name": "LuminAI",
+          "desc": "Talk with luminai",
+          "path": "/ai/luminai?text=",
+          "status": "ready",
+          "params": {
+            "text": "Text for luminai to respond to"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Random",
+      "items": [
+        {
+          "name": "Blue Archive",
+          "desc": "Blue Archive Random Images",
+          "path": "/random/ba",
+          "status": "ready"
+        }
+      ]
+    },
+    {
+      "name": "Search Tools",
+      "items": [
+        {
+          "name": "YouTube",
+          "desc": "Video search",
+          "path": "/search/youtube?q=",
+          "status": "ready",
+          "params": {
+            "q": "Search query"
+          }
+        }
+      ]
+    }               
+  ]
+}
