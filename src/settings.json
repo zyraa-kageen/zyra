@@ -15,10 +15,10 @@
   "name": "Artificial Intelligence",
   "items": [
     {
-      "name": "Deepseek",
-      "desc": "Chat with Deepseek AI v3.1",
-      "path": "/ai/deepseek?text= ",
-      "status": "ready",
+      "name": "belum tersedia",
+      "desc": "-",
+      "path": "/-/-?-= ",
+      "status": "comming soon",
       "params": {
         "text": "Text prompt"
       }
