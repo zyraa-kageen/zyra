@@ -15,12 +15,12 @@
       "name": "Artificial Intelligence",
       "items": [
         {
-          "name": "LuminAI",
-          "desc": "Talk with luminai",
-          "path": "/ai/luminai?text= ",
+          "name": "deepseek",
+          "desc": "type anything deepseek will answer ",
+          "path": "/ai/deepseek?text= ",
           "status": "ready",
           "params": {
-            "text": "Text for luminai to respond to"
+            "text": "Text for deepseek to respond to"
           }
         }
       ]
