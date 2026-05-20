@@ -17,10 +17,10 @@
         {
           "name": "deepseek",
           "desc": "type anything deepseek will answer ",
-          "path": "/ai/deepseek?q=",
+          "path": "/ai/deepseek?query=",
           "status": "ready",
           "params": {
-            "q": "Text for deepseek to respond to"
+            "query": "Text for deepseek to respond to"
           }
         }
       ]
