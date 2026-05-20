@@ -145,16 +145,8 @@
             "q": "Search keyword",
             "count": "Number of results (default: 12)"
           }
-        },
-        {
-      "name": "Wuthering Waves Character",
-      "desc": "Search Wuthering Waves character info",
-      "path": "/search/wuwa?name= ",
-      "status": "ready",
-      "params": {
-        "name": "Character name (e.g. Rover)"
-      }
-}
+        }
+        
       ]
     },
     {
