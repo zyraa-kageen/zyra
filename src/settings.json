@@ -12,22 +12,8 @@
   },
   "categories": [
     {
-      "name": "Artificial Intelligence",
-      "items": [
-        {
-          "name": "deepseek",
-          "desc": "type anything deepseek will answer ",
-          "path": "/ai/deepseek?query=",
-          "status": "ready",
-          "params": {
-            "query": "Text for deepseek to respond to"
-          }
-        }
-      ]
-    },
-    {
-  "name": "Anime",
-  "items": [
+     "name": "Anime",
+     "items": [
     {
       "name": "Anime Home",
       "desc": "Get latest ongoing & completed anime",
