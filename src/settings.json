@@ -153,7 +153,7 @@
   "items": [
     {
       "name": "TikTok Downloader",
-      "desc": "Download TikTok video/photo (auto fallback v1→v2→v3)",
+      "desc": "Download TikTok video/photo (auto fallback v1)",
       "path": "/dl/tiktok?url= ",
       "status": "ready",
       "params": {
