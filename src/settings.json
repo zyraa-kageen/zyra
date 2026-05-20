@@ -12,6 +12,21 @@
   },
   "categories": [
     {
+  "name": "Artificial Intelligence",
+  "items": [
+    {
+      "name": "Deepseek",
+      "desc": "Chat with Deepseek AI v3.1",
+      "path": "/ai/deepseek?text= ",
+      "status": "ready",
+      "params": {
+        "text": "Text prompt"
+      }
+    }
+  ]
+    },
+    
+    {
      "name": "Anime",
      "items": [
     {
