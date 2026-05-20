@@ -145,8 +145,48 @@
             "count": "Number of results (default: 12)"
           }
         }
-        
       ]
-    } 
+    },
+    {
+  "name": "Downloader",
+  "items": [
+    {
+      "name": "TikTok Downloader",
+      "desc": "Download TikTok video/photo (auto fallback v1→v2→v3)",
+      "path": "/dl/tiktok?url= ",
+      "status": "ready",
+      "params": {
+        "url": "TikTok URL"
+      }
+    },
+    {
+      "name": "TikTok Downloader V1",
+      "desc": "Download TikTok via savett.cc",
+      "path": "/dl/tiktok/v1?url= ",
+      "status": "ready",
+      "params": {
+        "url": "TikTok URL"
+      }
+    },
+    {
+      "name": "TikTok Downloader V2",
+      "desc": "Download TikTok via savetik.io",
+      "path": "/dl/tiktok/v2?url= ",
+      "status": "ready",
+      "params": {
+        "url": "TikTok URL"
+      }
+    },
+    {
+      "name": "TikTok Downloader V3",
+      "desc": "Download TikTok via tikwm.com",
+      "path": "/dl/tiktok/v3?url= ",
+      "status": "ready",
+      "params": {
+        "url": "TikTok URL"
+      }
+    }
+  ]
+}
   ]
 }
