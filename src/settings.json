@@ -125,7 +125,7 @@
       ]
     },
     {
-      "name": "Search Tools",
+      "name": "Search",
       "items": [
         {
           "name": "YouTube",
@@ -167,6 +167,20 @@
       "status": "ready",
       "params": {
         "url": "TikTok URL"
+      }
+    }
+  ]
+},
+    {
+  "name": "Stalk",
+  "items": [
+    {
+      "name": "Free Fire Stalk",
+      "desc": "Get Free Fire nickname by User ID",
+      "path": "/stalk/freefire?id= ",
+      "status": "ready",
+      "params": {
+        "id": "Free Fire User ID"
       }
     }
   ]
