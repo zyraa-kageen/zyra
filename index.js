@@ -52,6 +52,63 @@ const loadRoutes = async () => {
                 const filePath = path.join(subfolderPath, file);
                 if (path.extname(file) === '.js') {
                     try {
+                        const mod = await import(filePath);
+                        const routeFn = mod.default || mod.handler || Object.values(mod)[0];
+                        if (typeof routeFn === 'function') {
+                            routeFn(app);
+                            totalRoutes++;
+                            console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+                        } else {
+                            console.warn(chalk.bgHex('#FFA500').hex('#333').bold(` Skipped: ${file} `));
+                        }
+                    } catch (e) {
+                        console.error(chalk.bgRed.white.bold(` Failed: ${file} → ${e.message} `));
+                    }
+                }
+            }
+        }
+    }
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(' Load Complete! ✓ '));
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Total Routes Loaded: ${totalRoutes} `));
+};
+
+await loadRoutes();
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'api-page', 'index.html'));
+});
+
+app.use((req, res, next) => {
+    res.status(404).sendFile(process.cwd() + "/api-page/404.html");
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).sendFile(process.cwd() + "/api-page/500.html");
+});
+
+app.listen(PORT, () => {
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
+});
+
+export default app;        return originalJson.call(this, data);
+    };
+    next();
+});
+
+let totalRoutes = 0;
+const apiFolder = path.join(__dirname, './src/api');
+
+const loadRoutes = async () => {
+    const subfolders = fs.readdirSync(apiFolder);
+    for (const subfolder of subfolders) {
+        const subfolderPath = path.join(apiFolder, subfolder);
+        if (fs.statSync(subfolderPath).isDirectory()) {
+            const files = fs.readdirSync(subfolderPath);
+            for (const file of files) {
+                const filePath = path.join(subfolderPath, file);
+                if (path.extname(file) === '.js') {
+                    try {
                         const { default: routeFn } = await import(filePath);
                         if (typeof routeFn === 'function') {
                             routeFn(app);
