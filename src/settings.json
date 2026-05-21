@@ -14,29 +14,9 @@
     {
   "name": "Artificial Intelligence",
   "items": [
-    {
-  "name": "Unlimited AI",
-  "desc": "Chat AI dengan berbagai character anime & public figure",
-  "path": "/ai/unlimitedai",
-  "status": "error",
-  "params": [
-    {
-      "name": "text",
-      "required": true,
-      "desc": "Pesan untuk AI"
-    },
-    {
-      "name": "character",
-      "required": false,
-      "desc": "rimuru / frieren / kobo / waguri / jokowi / prabowo"
-    },
-    {
-      "name": "prompt",
-      "required": false,
-      "desc": "Custom prompt tambahan"
-    }
-  ]
-    }
+
+
+    
   ]
     },
     
