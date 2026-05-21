@@ -145,8 +145,16 @@
             "q": "Search keyword",
             "count": "Number of results (default: 12)"
           }
+        },
+        {
+  "name": "Wuthering Waves Character",
+  "desc": "Search Wuthering Waves character info & story",
+  "path": "/search/wuwa?query=",
+  "status": "ready",
+  "params": {
+    "query": "Character name (e.g. Camellya, Rover, Jinhsi)"
+  }
         }
-        
       ]
     }
   ]
