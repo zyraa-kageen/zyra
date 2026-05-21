@@ -17,12 +17,25 @@
     {
   "name": "Unlimited AI",
   "desc": "Chat AI dengan berbagai character anime & public figure",
-  "path": "/ai/unlimitedai?text=",
+  "path": "/ai/unlimitedai",
   "status": "ready",
-  "params": {
-    "text": "Prompt atau pertanyaan",
-    "character": "rimuru | frieren | kobo | waguri | jokowi | prabowo"
-  }
+  "params": [
+    {
+      "name": "text",
+      "required": true,
+      "desc": "Pesan untuk AI"
+    },
+    {
+      "name": "character",
+      "required": false,
+      "desc": "rimuru / frieren / kobo / waguri / jokowi / prabowo"
+    },
+    {
+      "name": "prompt",
+      "required": false,
+      "desc": "Custom prompt tambahan"
+    }
+  ]
     }
   ]
     },
