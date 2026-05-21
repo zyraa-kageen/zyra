@@ -148,7 +148,7 @@
         },
         {
   "name": "Wuthering Waves Character",
-  "desc": "Search Wuthering Waves character info & story",
+  "desc": "Search Wuthering Waves character info",
   "path": "/search/wuwa?query=",
   "status": "ready",
   "params": {
