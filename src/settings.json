@@ -152,7 +152,16 @@
       "params": {
         "query": "Character name (e.g. camellya, jihnsi, hiyuki)"
       }
-      }   
+      },
+        {
+  "name": "Genshin Character Search",
+  "desc": "Search Genshin Impact character info, lore, image, dan stats",
+  "path": "/search/genshin?query=",
+  "status": "ready",
+  "params": {
+    "query": "Character name (e.g. furina, raiden shogun, nahida)"
+  }
+        }
     ]
     }
   ]
