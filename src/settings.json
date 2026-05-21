@@ -148,29 +148,6 @@
         }
         
       ]
-    },
-    {
-  "name": "Downloader",
-  "items": [
-    {
-      "name": "TikTok Downloader",
-      "desc": "Download TikTok video/photo (auto fallback v1)",
-      "path": "/dl/tiktok?url= ",
-      "status": "ready",
-      "params": {
-        "url": "TikTok URL"
-      }
-    },
-    {
-      "name": "TikTok Downloader V1",
-      "desc": "Download TikTok via savett.cc",
-      "path": "/dl/tiktok/v1?url= ",
-      "status": "ready",
-      "params": {
-        "url": "TikTok URL"
-      }
     }
-  ]
-}
   ]
 }
