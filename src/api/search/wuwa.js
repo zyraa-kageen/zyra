@@ -3,73 +3,36 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+const API =
+  "https://wutheringwaves.fandom.com/api.php";
+
 const BASE =
   "https://wutheringwaves.fandom.com";
 
-const SEARCH =
-  `${BASE}/wiki/Special:Search`;
+async function searchCharacter(query) {
 
-async function searchWuwa(query) {
-
-  const { data } = await axios.get(
-    SEARCH,
-    {
-      params: {
-        query
-      },
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0"
-      }
+  const { data } = await axios.get(API, {
+    params: {
+      action: "query",
+      list: "search",
+      srsearch: query,
+      format: "json"
+    },
+    headers: {
+      "User-Agent": "Mozilla/5.0"
     }
+  });
+
+  return (
+    data?.query?.search || []
   );
-
-  const $ = cheerio.load(data);
-
-  const results = [];
-
-  $(".unified-search__result").each(
-    (_, el) => {
-
-      const title = $(el)
-        .find(
-          ".unified-search__result__title"
-        )
-        .text()
-        .trim();
-
-      const href = $(el)
-        .find("a")
-        .attr("href");
-
-      const desc = $(el)
-        .find(
-          ".unified-search__result__snippet"
-        )
-        .text()
-        .replace(/\s+/g, " ")
-        .trim();
-
-      if (title && href) {
-
-        results.push({
-          title,
-          description: desc,
-          url: href.startsWith("http")
-            ? href
-            : BASE + href
-        });
-
-      }
-
-    }
-  );
-
-  return results;
 
 }
 
-async function getCharacter(url) {
+async function getPage(title) {
+
+  const url =
+    `${BASE}/wiki/${encodeURIComponent(title)}`;
 
   const { data } = await axios.get(
     url,
@@ -81,41 +44,65 @@ async function getCharacter(url) {
     }
   );
 
-  const $ = cheerio.load(data);
+  return {
+    html: data,
+    url
+  };
 
-  const name =
-    $("h1.page-header__title")
-      .text()
-      .trim();
+}
 
-  const description =
-    $(".mw-parser-output p")
-      .first()
-      .text()
-      .replace(/\s+/g, " ")
-      .trim();
+function clean(text = "") {
+
+  return text
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+async function getCharacter(title) {
+
+  const {
+    html,
+    url
+  } = await getPage(title);
+
+  const $ = cheerio.load(html);
 
   const image =
     $(".pi-image-thumbnail")
       .attr("src") ||
     $("meta[property='og:image']")
-      .attr("content");
+      .attr("content") ||
+    null;
+
+  const description =
+    clean(
+      $(".mw-parser-output p")
+        .first()
+        .text()
+    );
 
   const info = {};
 
   $(".pi-data").each((_, el) => {
 
-    const label = $(el)
-      .find(".pi-data-label")
-      .text()
-      .trim()
-      .toLowerCase();
+    const label =
+      clean(
+        $(el)
+          .find(
+            ".pi-data-label"
+          )
+          .text()
+      );
 
-    const value = $(el)
-      .find(".pi-data-value")
-      .text()
-      .replace(/\s+/g, " ")
-      .trim();
+    const value =
+      clean(
+        $(el)
+          .find(
+            ".pi-data-value"
+          )
+          .text()
+      );
 
     if (label && value) {
       info[label] = value;
@@ -127,9 +114,10 @@ async function getCharacter(url) {
 
   $("h2").each((_, el) => {
 
-    const title = $(el)
-      .text()
-      .toLowerCase();
+    const title =
+      $(el)
+        .text()
+        .toLowerCase();
 
     if (
       title.includes("story") ||
@@ -150,8 +138,9 @@ async function getCharacter(url) {
         ) {
 
           story +=
-            next.text().trim() +
-            "\n\n";
+            clean(
+              next.text()
+            ) + "\n\n";
 
         }
 
@@ -165,12 +154,12 @@ async function getCharacter(url) {
 
   return {
 
-    name,
+    name: title,
 
     description,
 
     story:
-      story.trim() ||
+      story ||
       "No story found",
 
     image,
@@ -205,13 +194,13 @@ export default function(app) {
 
         }
 
-        const search =
-          await searchWuwa(
+        const results =
+          await searchCharacter(
             query
           );
 
         if (
-          !search.length
+          !results.length
         ) {
 
           return res.status(404).json({
@@ -222,9 +211,12 @@ export default function(app) {
 
         }
 
+        const first =
+          results[0];
+
         const detail =
           await getCharacter(
-            search[0].url
+            first.title
           );
 
         res.status(200).json({
@@ -236,7 +228,17 @@ export default function(app) {
             ...detail,
 
             search_results:
-              search
+              results.map(v => ({
+                title: v.title,
+                snippet: clean(
+                  v.snippet.replace(
+                    /<[^>]+>/g,
+                    ""
+                  )
+                ),
+                url:
+                  `${BASE}/wiki/${encodeURIComponent(v.title)}`
+              }))
 
           }
 
@@ -245,8 +247,11 @@ export default function(app) {
       } catch (e) {
 
         res.status(500).json({
+
           status: false,
+
           error: e.message
+
         });
 
       }
