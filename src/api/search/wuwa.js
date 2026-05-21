@@ -103,7 +103,7 @@ function getStory(html = "") {
 export default function(app) {
 
   app.get(
-    "/anime/wuwa",
+    "/search/wuwa",
     async (req, res) => {
 
       try {
