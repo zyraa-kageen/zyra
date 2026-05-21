@@ -41,7 +41,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Api Route
 let totalRoutes = 0;
 const apiFolder = path.join(__dirname, './src/api');
 
@@ -55,10 +54,13 @@ const loadRoutes = async () => {
                 const filePath = path.join(subfolderPath, file);
                 if (path.extname(file) === '.js') {
                     try {
-                        // support CJS route files pakai require
-                        require(filePath)(app);
-                        totalRoutes++;
-                        console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+                        const mod = await import(filePath);
+                        const routeFn = mod.default || mod;
+                        if (typeof routeFn === 'function') {
+                            routeFn(app);
+                            totalRoutes++;
+                            console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+                        }
                     } catch (e) {
                         console.error(chalk.bgRed.white.bold(` Failed: ${file} → ${e.message} `));
                     }
@@ -66,7 +68,6 @@ const loadRoutes = async () => {
             }
         }
     }
-
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(' Load Complete! ✓ '));
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Total Routes Loaded: ${totalRoutes} `));
 };
@@ -87,6 +88,10 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
+});
+
+export default app;app.listen(PORT, () => {
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
 });
 
