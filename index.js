@@ -54,12 +54,21 @@ const loadRoutes = async () => {
                 const filePath = path.join(subfolderPath, file);
                 if (path.extname(file) === '.js') {
                     try {
-                        const mod = await import(filePath);
-                        const routeFn = mod.default || mod;
+                        // coba ESM dulu, fallback ke CJS
+                        let routeFn;
+                        try {
+                            const mod = await import(filePath);
+                            routeFn = mod.default ?? mod;
+                        } catch {
+                            routeFn = require(filePath);
+                        }
+
                         if (typeof routeFn === 'function') {
                             routeFn(app);
                             totalRoutes++;
                             console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+                        } else {
+                            console.warn(chalk.bgHex('#FFA500').hex('#333').bold(` Skipped (not a function): ${file} `));
                         }
                     } catch (e) {
                         console.error(chalk.bgRed.white.bold(` Failed: ${file} → ${e.message} `));
@@ -91,10 +100,7 @@ app.listen(PORT, () => {
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
 });
 
-export default app;app.listen(PORT, () => {
-    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
-});
-
+export default app;
 export default app;
 // Api Route
 let totalRoutes = 0;
