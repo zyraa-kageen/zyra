@@ -15,13 +15,14 @@
   "name": "Artificial Intelligence",
   "items": [
     {
-      "name": "belum tersedia",
-      "desc": "-",
-      "path": "/-/-?-= ",
-      "status": "update",
-      "params": {
-        "text": "Text prompt"
-      }
+  "name": "Unlimited AI",
+  "desc": "Chat AI dengan berbagai character anime & public figure",
+  "path": "/ai/unlimitedai?text=",
+  "status": "ready",
+  "params": {
+    "text": "Prompt atau pertanyaan",
+    "character": "rimuru | frieren | kobo | waguri | jokowi | prabowo"
+  }
     }
   ]
     },
