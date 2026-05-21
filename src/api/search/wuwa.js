@@ -1,13 +1,9 @@
 // save: src/routes/anime/wuwa.js
 
 import axios from "axios";
-import * as cheerio from "cheerio";
 
 const API =
   "https://wutheringwaves.fandom.com/api.php";
-
-const BASE =
-  "https://wutheringwaves.fandom.com";
 
 async function searchCharacter(query) {
 
@@ -17,165 +13,97 @@ async function searchCharacter(query) {
       list: "search",
       srsearch: query,
       format: "json"
-    },
-    headers: {
-      "User-Agent": "Mozilla/5.0"
     }
   });
 
-  return (
-    data?.query?.search || []
-  );
-
-}
-
-async function getPage(title) {
-
-  const url =
-    `${BASE}/wiki/${encodeURIComponent(title)}`;
-
-  const { data } = await axios.get(
-    url,
-    {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0"
-      }
-    }
-  );
-
-  return {
-    html: data,
-    url
-  };
-
-}
-
-function clean(text = "") {
-
-  return text
-    .replace(/\s+/g, " ")
-    .trim();
+  return data?.query?.search || [];
 
 }
 
 async function getCharacter(title) {
 
-  const {
-    html,
-    url
-  } = await getPage(title);
+  const { data } = await axios.get(API, {
+    params: {
+      action: "parse",
+      page: title,
+      prop: "text",
+      format: "json"
+    }
+  });
 
-  const $ = cheerio.load(html);
+  return data?.parse || null;
 
-  const image =
-    $(".pi-image-thumbnail")
-      .attr("src") ||
-    $("meta[property='og:image']")
-      .attr("content") ||
-    null;
+}
 
-  const description =
-    clean(
-      $(".mw-parser-output p")
-        .first()
-        .text()
+function strip(html = "") {
+
+  return html
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+function getImage(html = "") {
+
+  const match =
+    html.match(
+      /<img[^>]+src="([^"]+)"/i
     );
+
+  return match?.[1] || null;
+
+}
+
+function getInfo(html = "") {
 
   const info = {};
 
-  $(".pi-data").each((_, el) => {
+  const regex =
+    /<h3[^>]*class="pi-data-label"[^>]*>(.*?)<\/h3>[\s\S]*?<div[^>]*class="pi-data-value"[^>]*>(.*?)<\/div>/gi;
 
-    const label =
-      clean(
-        $(el)
-          .find(
-            ".pi-data-label"
-          )
-          .text()
-      );
+  let match;
+
+  while (
+    (match = regex.exec(html))
+  ) {
+
+    const key =
+      strip(match[1]);
 
     const value =
-      clean(
-        $(el)
-          .find(
-            ".pi-data-value"
-          )
-          .text()
-      );
+      strip(match[2]);
 
-    if (label && value) {
-      info[label] = value;
+    if (key && value) {
+      info[key] = value;
     }
 
-  });
+  }
 
-  let story = "";
+  return info;
 
-  $("h2").each((_, el) => {
+}
 
-    const title =
-      $(el)
-        .text()
-        .toLowerCase();
+function getStory(html = "") {
 
-    if (
-      title.includes("story") ||
-      title.includes("lore") ||
-      title.includes("background")
-    ) {
+  const storyMatch =
+    html.match(
+      /<span[^>]*id="(?:Lore|Story|Background)"[^>]*><\/span>([\s\S]*?)(<h2|$)/i
+    );
 
-      let next =
-        $(el).next();
+  if (!storyMatch)
+    return null;
 
-      while (
-        next.length &&
-        next[0].name !== "h2"
-      ) {
-
-        if (
-          next[0].name === "p"
-        ) {
-
-          story +=
-            clean(
-              next.text()
-            ) + "\n\n";
-
-        }
-
-        next = next.next();
-
-      }
-
-    }
-
-  });
-
-  return {
-
-    name: title,
-
-    description,
-
-    story:
-      story ||
-      "No story found",
-
-    image,
-
-    info,
-
-    url
-
-  };
+  return strip(
+    storyMatch[1]
+  ).slice(0, 3000);
 
 }
 
 export default function(app) {
 
   app.get(
-    "/search/wuwa",
+    "/anime/wuwa",
     async (req, res) => {
 
       try {
@@ -194,13 +122,13 @@ export default function(app) {
 
         }
 
-        const results =
+        const search =
           await searchCharacter(
             query
           );
 
         if (
-          !results.length
+          !search.length
         ) {
 
           return res.status(404).json({
@@ -211,13 +139,29 @@ export default function(app) {
 
         }
 
-        const first =
-          results[0];
+        const title =
+          search[0].title;
 
-        const detail =
+        const parsed =
           await getCharacter(
-            first.title
+            title
           );
+
+        if (!parsed) {
+
+          return res.status(404).json({
+            status: false,
+            error:
+              "Failed parsing character"
+          });
+
+        }
+
+        const html =
+          parsed.text["*"];
+
+        const info =
+          getInfo(html);
 
         res.status(200).json({
 
@@ -225,19 +169,33 @@ export default function(app) {
 
           result: {
 
-            ...detail,
+            name: title,
+
+            description:
+              strip(html)
+                .slice(0, 500),
+
+            story:
+              getStory(html),
+
+            image:
+              getImage(html),
+
+            info,
+
+            url:
+              `https://wutheringwaves.fandom.com/wiki/${encodeURIComponent(title)}`,
 
             search_results:
-              results.map(v => ({
-                title: v.title,
-                snippet: clean(
-                  v.snippet.replace(
-                    /<[^>]+>/g,
-                    ""
-                  )
-                ),
-                url:
-                  `${BASE}/wiki/${encodeURIComponent(v.title)}`
+              search.map(v => ({
+                title:
+                  v.title,
+                snippet:
+                  strip(
+                    v.snippet
+                  ),
+                pageid:
+                  v.pageid
               }))
 
           }
@@ -250,7 +208,8 @@ export default function(app) {
 
           status: false,
 
-          error: e.message
+          error:
+            e.message
 
         });
 
