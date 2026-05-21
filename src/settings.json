@@ -18,7 +18,7 @@
   "name": "Unlimited AI",
   "desc": "Chat AI dengan berbagai character anime & public figure",
   "path": "/ai/unlimitedai",
-  "status": "ready",
+  "status": "error",
   "params": [
     {
       "name": "text",
