@@ -144,16 +144,16 @@
             "count": "Number of results (default: 12)"
           }
         },
-        {
-  "name": "Wuthering Waves Character",
-  "desc": "Search Wuthering Waves character info",
-  "path": "/search/wuwa?query=",
-  "status": "ready",
-  "params": {
-    "query": "Character name (e.g. Camellya, Rover, Jinhsi)"
-  }
-        }
-      ]
+           {
+      "name": "Wuwa Character Search",
+      "desc": "Search character, lore, stats, image, dan hasil pencarian fandom",
+      "path": "/search/wuwa?query=",
+      "status": "ready",
+      "params": {
+        "query": "Character name (e.g. camellya, jihnsi, hiyuki)"
+      }
+      }   
+    ]
     }
   ]
 }
