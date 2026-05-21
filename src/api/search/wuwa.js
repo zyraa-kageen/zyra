@@ -1,309 +1,320 @@
-import axios from 'axios'
+// save: src/routes/anime/wuwa.js
 
-const BASE =
-  'https://wutheringwaves.fandom.com/api.php'
+import axios from "axios";
 
-const headers = {
-  'User-Agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36'
+const API =
+  "https://wutheringwaves.fandom.com/api.php";
+
+async function searchCharacter(query) {
+
+  const { data } = await axios.get(API, {
+    params: {
+      action: "opensearch",
+      search: query,
+      limit: 1,
+      namespace: 0,
+      format: "json"
+    },
+    headers: {
+      "User-Agent": "Mozilla/5.0"
+    }
+  });
+
+  return data?.[1]?.[0] || null;
 }
 
-function cleanText(text = '') {
+async function getPage(title) {
+
+  const { data } = await axios.get(API, {
+    params: {
+      action: "parse",
+      page: title,
+      prop: "wikitext",
+      format: "json"
+    },
+    headers: {
+      "User-Agent": "Mozilla/5.0"
+    }
+  });
+
+  return data?.parse?.wikitext?.["*"] || "";
+}
+
+async function getExtract(title) {
+
+  const { data } = await axios.get(API, {
+    params: {
+      action: "query",
+      prop: "extracts",
+      explaintext: 1,
+      exintro: 1,
+      titles: title,
+      format: "json",
+      formatversion: 2
+    },
+    headers: {
+      "User-Agent": "Mozilla/5.0"
+    }
+  });
+
+  return data?.query?.pages?.[0]?.extract || "";
+}
+
+function cleanText(text = "") {
+
   return text
-    .replace(/\[\[|\]\]/g, '')
-    .replace(/<.*?>/g, '')
-    .replace(/\{\{.*?\}\}/g, '')
-    .replace(/File:/gi, '')
-    .replace(/'''/g, '')
-    .trim()
+    .replace(/\[\[|\]\]/g, "")
+    .replace(/\{\{.*?\}\}/g, "")
+    .replace(/<.*?>/g, "")
+    .replace(/File:/gi, "")
+    .replace(/\|/g, "")
+    .trim();
+
 }
 
 function findValue(text, ...keys) {
+
   for (const key of keys) {
 
     const regex = new RegExp(
       `\\|\\s*${key}\\s*=\\s*([^\\n]+)`,
-      'i'
-    )
+      "i"
+    );
 
-    const match = text.match(regex)
+    const match = text.match(regex);
 
     if (match?.[1]) {
 
-      const clean =
-        cleanText(match[1])
+      const value =
+        cleanText(match[1]);
 
       if (
-        clean &&
-        clean.toLowerCase() !== 'unknown' &&
-        clean.toLowerCase() !== 'null'
+        value &&
+        value.toLowerCase() !== "unknown"
       ) {
-        return clean
+        return value;
       }
+
     }
+
   }
 
-  return undefined
+  return null;
+
 }
 
-async function wuwa(query = 'Rover') {
+function getImage(text) {
 
-  // SEARCH
-  const search = await axios.get(BASE, {
-    params: {
-      action: 'opensearch',
-      search: query,
-      limit: 1,
-      namespace: 0,
-      format: 'json'
-    },
-    headers
-  })
+  const match =
+    text.match(
+      /\|\s*image\s*=\s*(.+)/i
+    );
+
+  if (!match?.[1]) return null;
+
+  const file =
+    cleanText(match[1]);
+
+  return `https://static.wikia.nocookie.net/wutheringwaves/images/${encodeURIComponent(file)}`;
+
+}
+
+function getStory(text) {
+
+  const loreMatch =
+    text.match(
+      /==\s*Lore\s*==([\s\S]*?)(==|$)/i
+    );
+
+  const storyMatch =
+    text.match(
+      /==\s*Story\s*==([\s\S]*?)(==|$)/i
+    );
+
+  const aboutMatch =
+    text.match(
+      /==\s*About\s*==([\s\S]*?)(==|$)/i
+    );
+
+  const raw =
+    loreMatch?.[1] ||
+    storyMatch?.[1] ||
+    aboutMatch?.[1];
+
+  if (!raw) return null;
+
+  return cleanText(raw)
+    .replace(/\n{2,}/g, "\n")
+    .slice(0, 2000);
+
+}
+
+async function wuwa(query) {
 
   const title =
-    search.data?.[1]?.[0]
+    await searchCharacter(query);
 
   if (!title) {
-    throw new Error('Character not found')
+    return {
+      status: false,
+      error: "Character not found"
+    };
   }
 
-  // EXTRACT
-  const extract = await axios.get(BASE, {
-    params: {
-      action: 'query',
-      prop: 'extracts',
-      explaintext: 1,
-      exintro: 1,
-      titles: title,
-      format: 'json',
-      formatversion: 2
-    },
-    headers
-  })
+  const wikiText =
+    await getPage(title);
 
-  const page =
-    extract.data.query.pages[0]
+  const extract =
+    await getExtract(title);
 
-  // PARSE
-  const wiki = await axios.get(BASE, {
-    params: {
-      action: 'parse',
-      page: title,
-      prop: 'wikitext|images',
-      format: 'json'
-    },
-    headers
-  })
+  return {
 
-  const text =
-    wiki.data.parse?.wikitext?.['*']
+    status: true,
 
-  if (!text) {
-    throw new Error('No data found')
-  }
+    result: {
 
-  // IMAGE
-  let image
+      name: title,
 
-  const images =
-    wiki.data.parse?.images || []
+      description: extract,
 
-  const png =
-    images.find(v =>
-      /\.(png|jpg|jpeg|webp)$/i.test(v)
-    )
+      story:
+        getStory(wikiText),
 
-  if (png) {
+      rarity:
+        findValue(
+          wikiText,
+          "rarity"
+        ),
 
-    const imgReq = await axios.get(BASE, {
-      params: {
-        action: 'query',
-        titles: `File:${png}`,
-        prop: 'imageinfo',
-        iiprop: 'url',
-        format: 'json'
-      },
-      headers
-    })
+      weapon:
+        findValue(
+          wikiText,
+          "weapon"
+        ),
 
-    const pages =
-      imgReq.data.query.pages
+      attribute:
+        findValue(
+          wikiText,
+          "attribute",
+          "element"
+        ),
 
-    const first =
-      Object.values(pages)[0]
+      faction:
+        findValue(
+          wikiText,
+          "faction",
+          "affiliation"
+        ),
 
-    image =
-      first?.imageinfo?.[0]?.url
-  }
+      gender:
+        findValue(
+          wikiText,
+          "gender",
+          "sex"
+        ),
 
-  // STORY
-  let story
+      birthday:
+        findValue(
+          wikiText,
+          "birthday"
+        ),
 
-  const sections = text.match(
-    /==\s*(Lore|Story|Background|Profile|Introduction)\s*==([\s\S]*?)(?=\n==|$)/i
-  )
+      homeland:
+        findValue(
+          wikiText,
+          "nation",
+          "region",
+          "homeland"
+        ),
 
-  if (sections?.[2]) {
+      release_date:
+        findValue(
+          wikiText,
+          "release_date"
+        ),
 
-    story = cleanText(sections[2])
-      .replace(/\n+/g, ' ')
-      .slice(0, 1000)
-  }
+      hp:
+        findValue(
+          wikiText,
+          "hp",
+          "base_hp"
+        ),
 
-  // RESULT
-  const result = {
+      atk:
+        findValue(
+          wikiText,
+          "atk",
+          "base_atk"
+        ),
 
-    name: title,
+      def:
+        findValue(
+          wikiText,
+          "def",
+          "base_def"
+        ),
 
-    description:
-      page.extract,
+      crit_rate:
+        findValue(
+          wikiText,
+          "crit_rate"
+        ),
 
-    story,
+      crit_dmg:
+        findValue(
+          wikiText,
+          "crit_dmg"
+        ),
 
-    rarity:
-      findValue(text, 'rarity'),
+      image:
+        getImage(wikiText),
 
-    weapon:
-      findValue(text, 'weapon'),
+      url:
+        `https://wutheringwaves.fandom.com/wiki/${encodeURIComponent(title)}`
 
-    attribute:
-      findValue(
-        text,
-        'attribute',
-        'element'
-      ),
-
-    faction:
-      findValue(
-        text,
-        'affiliation',
-        'faction'
-      ),
-
-    gender:
-      findValue(
-        text,
-        'sex',
-        'gender'
-      ),
-
-    birthday:
-      findValue(
-        text,
-        'birthday'
-      ),
-
-    homeland:
-      findValue(
-        text,
-        'nation',
-        'region',
-        'homeland'
-      ),
-
-    release_date:
-      findValue(
-        text,
-        'release_date',
-        'release date'
-      ),
-
-    hp:
-      findValue(
-        text,
-        'hp',
-        'base_hp',
-        'HP'
-      ),
-
-    atk:
-      findValue(
-        text,
-        'atk',
-        'base_atk',
-        'ATK'
-      ),
-
-    def:
-      findValue(
-        text,
-        'def',
-        'base_def',
-        'DEF'
-      ),
-
-    crit_rate:
-      findValue(
-        text,
-        'crit_rate',
-        'crit rate'
-      ),
-
-    crit_dmg:
-      findValue(
-        text,
-        'crit_dmg',
-        'crit damage'
-      ),
-
-    image,
-
-    url:
-      `https://wutheringwaves.fandom.com/wiki/${encodeURIComponent(title)}`
-  }
-
-  // REMOVE EMPTY
-  Object.keys(result).forEach(key => {
-
-    if (
-      result[key] === undefined ||
-      result[key] === null ||
-      result[key] === ''
-    ) {
-      delete result[key]
     }
 
-  })
+  };
 
-  return result
 }
 
 export default function(app) {
 
-  app.get('/search/wuwa', async (req, res) => {
+  app.get(
+    "/search/wuwa",
+    async (req, res) => {
 
-    const {
-      query = 'Rover'
-    } = req.query
+      try {
 
-    if (!query) {
-      return res.status(400).json({
-        status: false,
-        error: 'Query is required'
-      })
+        const {
+          query
+        } = req.query;
+
+        if (!query) {
+
+          return res.status(400).json({
+            status: false,
+            error:
+              "Query is required"
+          });
+
+        }
+
+        const result =
+          await wuwa(query);
+
+        res.status(200).json(result);
+
+      } catch (e) {
+
+        res.status(500).json({
+          status: false,
+          error: e.message
+        });
+
+      }
+
     }
-
-    try {
-
-      const result =
-        await wuwa(query)
-
-      res.status(200).json({
-        status: true,
-        result
-      })
-
-    } catch (e) {
-
-      res.status(500).json({
-        status: false,
-        error:
-          e.response?.data ||
-          e.message
-      })
-
-    }
-
-  })
+  );
 
 }
