@@ -14,101 +14,48 @@
     {
   "name": "Artificial Intelligence",
   "items": [
-  {
-  "name": "belum tersedia",
-  "desc": "kapan kapan aja",
-  "path": "/-/-?=?",
-  "status": "update"
-  }
-    
+    {
+      "name": "belum tersedia",
+      "desc": "-",
+      "path": "/-/-?-= ",
+      "status": "update",
+      "params": {
+        "text": "Text prompt"
+      }
+    }
   ]
     },
     
     {
      "name": "Anime",
      "items": [
-    {
-      "name": "Anime Home",
-      "desc": "Get latest ongoing & completed anime",
-      "path": "/anime/home ",
-      "status": "ready"
-    },
-    {
-      "name": "Anime Schedule",
-      "desc": "Get anime schedule",
-      "path": "/anime/schedule ",
-      "status": "ready"
-    },
-    {
-      "name": "Anime Detail",
-      "desc": "Get anime detail by slug",
-      "path": "/anime/detail?slug= ",
-      "status": "ready",
-      "params": {
-        "slug": "Anime slug (e.g. akamoto-day-part-2-sub-indo)"
-      }
-    },
-    {
-      "name": "Anime Completed",
-      "desc": "Get list of completed anime",
-      "path": "/anime/completed?page= ",
-      "status": "ready",
-      "params": {
-        "page": "Page number (default: 1)"
-      }
-    },
-    {
-      "name": "Anime Ongoing",
-      "desc": "Get list of ongoing anime",
-      "path": "/anime/ongoing?page= ",
-      "status": "ready",
-      "params": {
-        "page": "Page number (default: 1)"
-      }
-    },
-    {
-      "name": "Anime Genre List",
-      "desc": "Get all available genres",
-      "path": "/anime/genres ",
-      "status": "ready"
-    },
-    {
-      "name": "Anime by Genre",
-      "desc": "Get anime filtered by genre",
-      "path": "/anime/genre?slug= ",
-      "status": "ready",
-      "params": {
-        "slug": "Genre slug (e.g. action)",
-        "page": "Page number (default: 1)"
-      }
-    },
-    {
-      "name": "Anime Search",
-      "desc": "Search anime by keyword",
-      "path": "/anime/search?keyword= ",
-      "status": "ready",
-      "params": {
-        "keyword": "Search keyword (e.g. naruto)"
-      }
-    },
-    {
-      "name": "Anime Episode",
-      "desc": "Get episode detail & download links",
-      "path": "/anime/episode?slug= ",
-      "status": "ready",
-      "params": {
-        "slug": "Episode slug (e.g. sd-p2-episode-10-sub-indo)"
-      }
-    },
-    {
-      "name": "Anime Batch",
-      "desc": "Get batch download links",
-      "path": "/anime/batch?slug= ",
-      "status": "ready",
-      "params": {
-        "slug": "Batch slug (e.g. jshk-s2-batch-sub-indo)"
-      }
-    }
+     {
+          "name": "Anime Search",
+          "desc": "Search anime from Anoboy",
+          "path": "/anime/search?query=",
+          "status": "ready",
+          "params": {
+            "query": "Anime title (e.g. one piece)"
+          }
+        },
+        {
+          "name": "Anime Detail",
+          "desc": "Get anime detail, synopsis, genre, episode list, characters & recommendations",
+          "path": "/anime/detail?url=",
+          "status": "ready",
+          "params": {
+            "url": "Anime URL from search result"
+          }
+        },
+        {
+          "name": "Anime Episode",
+          "desc": "Get iframe & download links",
+          "path": "/anime/episode?url=",
+          "status": "ready",
+          "params": {
+            "url": "Episode URL"
+          }
+        }
   ]
     },
     {
@@ -144,25 +91,16 @@
             "count": "Number of results (default: 12)"
           }
         },
-           {
-      "name": "Wuwa Character Search",
-      "desc": "Search character, lore, stats, image, dan hasil pencarian fandom",
-      "path": "/search/wuwa?query=",
-      "status": "ready",
-      "params": {
-        "query": "Character name (e.g. camellya, jihnsi, hiyuki)"
-      }
-      },
         {
-  "name": "Genshin Character Search",
-  "desc": "Search Genshin Impact character info, lore, image, dan stats",
-  "path": "/search/genshin?query=",
+  "name": "Wuthering Waves Character",
+  "desc": "Search Wuthering Waves character info",
+  "path": "/search/wuwa?query=",
   "status": "ready",
   "params": {
-    "query": "Character name (e.g. furina, raiden shogun, nahida)"
+    "query": "Character name (e.g. Camellya, Rover, Jinhsi)"
   }
         }
-    ]
+      ]
     }
   ]
 }
