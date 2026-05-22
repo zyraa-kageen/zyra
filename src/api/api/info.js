@@ -1,9 +1,9 @@
 export default function(app) {
 
-    global.totalReq = 0;
+    
 
     app.use((req, res, next) => {
-      totalReq++,
+      
         next();
     });
 
@@ -27,7 +27,6 @@ export default function(app) {
                 status: true,
                 result: {
                     status: 'Aktif',
-                    totalrequest: String(totalReq),
                     totalfitur: String(listRoutes()),
                     runtime: runtime(process.uptime()),
                     domain: req.hostname,
