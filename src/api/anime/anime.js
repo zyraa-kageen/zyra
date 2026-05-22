@@ -1,125 +1,437 @@
-import axios from 'axios';
+/**
+ * Anime Scraper Routes
+ * Scrape Anoboy Direct
+ * 
+ * Original Credit:
+ * Kayllano Aveline 👨‍💻
+ * AliciaCode - Web Scraping Specialist
+ * xalixia.biz.id
+ * 
+ * Convert ESM + API Route by Zyraa ⚡
+ */
 
-const baseURL = 'https://www.sankavollerei.com/anime';
+import axios from 'axios'
+import * as cheerio from 'cheerio'
 
-async function fetchJson(url) {
-    try {
-        const { data } = await axios.get(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
-        });
-        const { creator, source, author, credit, statusCode, statusMessage, message, ok, ...clean } = data;
-        return clean;
-    } catch (error) {
-        console.error(`Error fetching ${url}:`, error);
-        throw error;
+const BASE = 'https://anoboy.be'
+
+const HEADERS = {
+  'user-agent':
+    'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/148.0.0.0 Mobile Safari/537.36',
+  referer: BASE
+}
+
+async function fetchHTML(url) {
+
+  const { data } = await axios.get(url, {
+    headers: HEADERS
+  })
+
+  return cheerio.load(data)
+
+}
+
+async function searchAnime(query) {
+
+  const $ = await fetchHTML(
+    `${BASE}/?s=${encodeURIComponent(query)}`
+  )
+
+  const results = []
+
+  $('.listupd .bs').each((_, el) => {
+
+    const item = $(el)
+
+    results.push({
+      title:
+        item.find('.tt').text().trim(),
+
+      url:
+        item.find('a').attr('href'),
+
+      thumbnail:
+        item.find('img').attr('src'),
+
+      status:
+        item.find('.status').text().trim(),
+
+      type:
+        item.find('.typez').text().trim(),
+
+      subtitle:
+        item.find('.sb').text().trim(),
+
+      episode:
+        item.find('.epx').text().trim()
+    })
+
+  })
+
+  return results
+
+}
+
+async function animeDetail(url) {
+
+  const $ = await fetchHTML(url)
+
+  const genres = []
+
+  $('.genxed a').each((_, el) => {
+
+    genres.push(
+      $(el).text().trim()
+    )
+
+  })
+
+  const characters = []
+
+  $('.cvitem').each((_, el) => {
+
+    characters.push({
+      name:
+        $(el)
+          .find('.cvchar .charname')
+          .first()
+          .text()
+          .trim(),
+
+      role:
+        $(el)
+          .find('.cvchar .charrole')
+          .first()
+          .text()
+          .trim(),
+
+      voice_actor:
+        $(el)
+          .find('.cvactor .charname a')
+          .first()
+          .text()
+          .trim()
+    })
+
+  })
+
+  const episodes = []
+
+  $('.eplister ul li').each((_, el) => {
+
+    episodes.push({
+      episode:
+        $(el)
+          .find('.epl-num')
+          .text()
+          .trim(),
+
+      title:
+        $(el)
+          .find('.epl-title')
+          .text()
+          .trim(),
+
+      url:
+        $(el)
+          .find('a')
+          .attr('href'),
+
+      release_date:
+        $(el)
+          .find('.epl-date')
+          .text()
+          .trim()
+    })
+
+  })
+
+  const recommendations = []
+
+  $('.listupd .bs').each((i, el) => {
+
+    if (i < 10) {
+
+      recommendations.push({
+        title:
+          $(el)
+            .find('.tt')
+            .text()
+            .trim(),
+
+        url:
+          $(el)
+            .find('a')
+            .attr('href'),
+
+        thumbnail:
+          $(el)
+            .find('img')
+            .attr('src'),
+
+        type:
+          $(el)
+            .find('.typez')
+            .text()
+            .trim(),
+
+        status:
+          $(el)
+            .find('.status')
+            .text()
+            .trim()
+      })
+
     }
+
+  })
+
+  const info = {}
+
+  $('.spe span').each((_, el) => {
+
+    const txt =
+      $(el).text().trim()
+
+    const split =
+      txt.split(':')
+
+    if (split.length >= 2) {
+
+      const key =
+        split.shift().trim()
+
+      const value =
+        split.join(':').trim()
+
+      info[key] = value
+
+    }
+
+  })
+
+  return {
+    title:
+      $('.entry-title').text().trim(),
+
+    thumbnail:
+      $('.thumb img').attr('src') ||
+      $('.thumbook .thumb img').attr('src'),
+
+    rating:
+      $('.rating strong').text().trim(),
+
+    rating_percent:
+      $('.rtb span')
+        .attr('style')
+        ?.match(/\d+/)?.[0] || null,
+
+    japanese:
+      info['Japanese'] || null,
+
+    status:
+      info['Status'] || null,
+
+    type:
+      info['Type'] || null,
+
+    studio:
+      info['Studio'] || null,
+
+    producer:
+      info['Producers'] || null,
+
+    released:
+      info['Released'] || null,
+
+    duration:
+      info['Duration'] || null,
+
+    total_episode:
+      info['Episodes'] ||
+      episodes.length,
+
+    genres,
+
+    synopsis:
+      $('.entry-content p')
+        .map((_, el) =>
+          $(el).text().trim()
+        )
+        .get()
+        .join('\n\n'),
+
+    characters,
+
+    latest_episode:
+      episodes[0] || null,
+
+    first_episode:
+      episodes[
+        episodes.length - 1
+      ] || null,
+
+    episode_list:
+      episodes,
+
+    recommendations
+  }
+
+}
+
+async function episodeDetail(url) {
+
+  const $ = await fetchHTML(url)
+
+  const downloads = []
+
+  $('.dlbox ul li').each((_, el) => {
+
+    const quality =
+      $(el)
+        .find('strong')
+        .text()
+        .trim()
+
+    $(el)
+      .find('a')
+      .each((__, a) => {
+
+        downloads.push({
+          quality,
+          server:
+            $(a).text().trim(),
+
+          url:
+            $(a).attr('href')
+        })
+
+      })
+
+  })
+
+  return {
+    title:
+      $('.entry-title').text().trim(),
+
+    iframe:
+      $('iframe')
+        .first()
+        .attr('src'),
+
+    downloads
+  }
+
 }
 
 export default function(app) {
 
-    app.get('/anime/home', async (req, res) => {
-        try {
-            const result = await fetchJson(`${baseURL}/home`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+  app.get('/anime/search', async (req, res) => {
 
-    app.get('/anime/schedule', async (req, res) => {
-        try {
-            const result = await fetchJson(`${baseURL}/schedule`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+    const {
+      query
+    } = req.query
 
-    app.get('/anime/detail', async (req, res) => {
-        const { slug } = req.query;
-        if (!slug) return res.status(400).json({ status: false, error: 'Slug is required' });
-        try {
-            const result = await fetchJson(`${baseURL}/anime/${slug}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+    if (!query) {
 
-    app.get('/anime/completed', async (req, res) => {
-        const page = req.query.page || 1;
-        try {
-            const result = await fetchJson(`${baseURL}/complete-anime?page=${page}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+      return res.status(400).json({
+        status: false,
+        error: 'Query is required'
+      })
 
-    app.get('/anime/ongoing', async (req, res) => {
-        const page = req.query.page || 1;
-        try {
-            const result = await fetchJson(`${baseURL}/ongoing-anime?page=${page}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+    }
 
-    app.get('/anime/genres', async (req, res) => {
-        try {
-            const result = await fetchJson(`${baseURL}/genre`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+    try {
 
-    app.get('/anime/genre', async (req, res) => {
-        const { slug, page = 1 } = req.query;
-        if (!slug) return res.status(400).json({ status: false, error: 'Slug is required' });
-        try {
-            const result = await fetchJson(`${baseURL}/genre/${slug}?page=${page}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+      const result =
+        await searchAnime(query)
 
-    app.get('/anime/search', async (req, res) => {
-        const { keyword } = req.query;
-        if (!keyword) return res.status(400).json({ status: false, error: 'Keyword is required' });
-        try {
-            const result = await fetchJson(`${baseURL}/search/${keyword}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+      res.status(200).json({
+        status: true,
+        result
+      })
 
-    app.get('/anime/episode', async (req, res) => {
-        const { slug } = req.query;
-        if (!slug) return res.status(400).json({ status: false, error: 'Slug is required' });
-        try {
-            const result = await fetchJson(`${baseURL}/episode/${slug}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+    } catch (e) {
 
-    app.get('/anime/batch', async (req, res) => {
-        const { slug } = req.query;
-        if (!slug) return res.status(400).json({ status: false, error: 'Slug is required' });
-        try {
-            const result = await fetchJson(`${baseURL}/batch/${slug}`);
-            res.status(200).json({ status: true, result });
-        } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
-        }
-    });
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
 
-      }
-                                  
+    }
+
+  })
+
+  app.get('/anime/detail', async (req, res) => {
+
+    const {
+      url
+    } = req.query
+
+    if (!url) {
+
+      return res.status(400).json({
+        status: false,
+        error: 'Url is required'
+      })
+
+    }
+
+    try {
+
+      const result =
+        await animeDetail(url)
+
+      res.status(200).json({
+        status: true,
+        result
+      })
+
+    } catch (e) {
+
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
+
+    }
+
+  })
+
+  app.get('/anime/episode', async (req, res) => {
+
+    const {
+      url
+    } = req.query
+
+    if (!url) {
+
+      return res.status(400).json({
+        status: false,
+        error: 'Url is required'
+      })
+
+    }
+
+    try {
+
+      const result =
+        await episodeDetail(url)
+
+      res.status(200).json({
+        status: true,
+        result
+      })
+
+    } catch (e) {
+
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
+
+    }
+
+  })
+
+}
