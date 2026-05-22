@@ -1,6 +1,6 @@
 export default function(app) {
 
-    let totalReq = 0;
+    global.totalReq = 0;
 
     app.use((req, res, next) => {
       totalReq++,
