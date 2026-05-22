@@ -29,7 +29,14 @@
     {
      "name": "Anime",
      "items": [
-     {
+        {
+          "name": "Anime Home",
+          "desc": "Get latest anime homepage",
+          "path": "/anime/home",
+          "status": "ready"
+        },
+
+        {
           "name": "Anime Search",
           "desc": "Search anime from Anoboy",
           "path": "/anime/search?query=",
@@ -38,15 +45,17 @@
             "query": "Anime title (e.g. one piece)"
           }
         },
+
         {
           "name": "Anime Detail",
-          "desc": "Get anime detail, synopsis, genre, episode list, characters & recommendations",
+          "desc": "Get anime detail, synopsis, genre, characters & episode list",
           "path": "/anime/detail?url=",
           "status": "ready",
           "params": {
             "url": "Anime URL from search result"
           }
         },
+
         {
           "name": "Anime Episode",
           "desc": "Get iframe & download links",
@@ -54,6 +63,26 @@
           "status": "ready",
           "params": {
             "url": "Episode URL"
+          }
+        },
+
+        {
+          "name": "Anime Ongoing",
+          "desc": "Get latest ongoing anime",
+          "path": "/anime/ongoing?page=",
+          "status": "ready",
+          "params": {
+            "page": "Page number (default: 1)"
+          }
+        },
+
+        {
+          "name": "Anime Completed",
+          "desc": "Get completed anime list",
+          "path": "/anime/completed?page=",
+          "status": "ready",
+          "params": {
+            "page": "Page number (default: 1)"
           }
         }
   ]
