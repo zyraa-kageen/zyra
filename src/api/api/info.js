@@ -30,7 +30,9 @@ export default function(app) {
                     totalrequest: String(totalReq),
                     totalfitur: String(listRoutes()),
                     runtime: runtime(process.uptime()),
-                    domain: req.hostname
+                    domain: req.hostname,
+                    youtube: "https://www.youtube.com/@zyra422",
+                    tiktok: "https://tiktok.com/@zyra224i"
                 }
             });
         } catch (e) {
