@@ -1,13 +1,13 @@
 /**
  * Anime Scraper Routes
  * Scrape Anoboy Direct
- * 
+ *
  * Original Credit:
  * Kayllano Aveline 👨‍💻
  * AliciaCode - Web Scraping Specialist
  * xalixia.biz.id
- * 
- * Convert ESM + API Route by Zyraa ⚡
+ *
+ * Full ESM Version by Zyraa ⚡
  */
 
 import axios from 'axios'
@@ -30,6 +30,10 @@ async function fetchHTML(url) {
   return cheerio.load(data)
 
 }
+
+/* =========================
+   SEARCH
+========================= */
 
 async function searchAnime(query) {
 
@@ -71,6 +75,10 @@ async function searchAnime(query) {
   return results
 
 }
+
+/* =========================
+   DETAIL
+========================= */
 
 async function animeDetail(url) {
 
@@ -279,6 +287,10 @@ async function animeDetail(url) {
 
 }
 
+/* =========================
+   EPISODE
+========================= */
+
 async function episodeDetail(url) {
 
   const $ = await fetchHTML(url)
@@ -299,11 +311,15 @@ async function episodeDetail(url) {
 
         downloads.push({
           quality,
+
           server:
-            $(a).text().trim(),
+            $(a)
+              .text()
+              .trim(),
 
           url:
-            $(a).attr('href')
+            $(a)
+              .attr('href')
         })
 
       })
@@ -312,7 +328,9 @@ async function episodeDetail(url) {
 
   return {
     title:
-      $('.entry-title').text().trim(),
+      $('.entry-title')
+        .text()
+        .trim(),
 
     iframe:
       $('iframe')
@@ -324,13 +342,190 @@ async function episodeDetail(url) {
 
 }
 
+/* =========================
+   HOME
+========================= */
+
+async function animeHome() {
+
+  const $ = await fetchHTML(BASE)
+
+  const ongoing = []
+  const completed = []
+
+  $('.venz .listupd .bs').each((_, el) => {
+
+    ongoing.push({
+      title:
+        $(el)
+          .find('.tt')
+          .text()
+          .trim(),
+
+      url:
+        $(el)
+          .find('a')
+          .attr('href'),
+
+      thumbnail:
+        $(el)
+          .find('img')
+          .attr('src'),
+
+      episode:
+        $(el)
+          .find('.epx')
+          .text()
+          .trim()
+    })
+
+  })
+
+  $('.listupd .bs').each((_, el) => {
+
+    completed.push({
+      title:
+        $(el)
+          .find('.tt')
+          .text()
+          .trim(),
+
+      url:
+        $(el)
+          .find('a')
+          .attr('href'),
+
+      thumbnail:
+        $(el)
+          .find('img')
+          .attr('src')
+    })
+
+  })
+
+  return {
+    ongoing,
+    completed
+  }
+
+}
+
+/* =========================
+   ONGOING
+========================= */
+
+async function ongoingAnime(page = 1) {
+
+  const $ = await fetchHTML(
+    `${BASE}/anime-terbaru/page/${page}`
+  )
+
+  const results = []
+
+  $('.listupd .bs').each((_, el) => {
+
+    results.push({
+      title:
+        $(el)
+          .find('.tt')
+          .text()
+          .trim(),
+
+      url:
+        $(el)
+          .find('a')
+          .attr('href'),
+
+      thumbnail:
+        $(el)
+          .find('img')
+          .attr('src'),
+
+      episode:
+        $(el)
+          .find('.epx')
+          .text()
+          .trim()
+    })
+
+  })
+
+  return results
+
+}
+
+/* =========================
+   COMPLETED
+========================= */
+
+async function completedAnime(page = 1) {
+
+  const $ = await fetchHTML(
+    `${BASE}/anime-completed/page/${page}`
+  )
+
+  const results = []
+
+  $('.listupd .bs').each((_, el) => {
+
+    results.push({
+      title:
+        $(el)
+          .find('.tt')
+          .text()
+          .trim(),
+
+      url:
+        $(el)
+          .find('a')
+          .attr('href'),
+
+      thumbnail:
+        $(el)
+          .find('img')
+          .attr('src')
+    })
+
+  })
+
+  return results
+
+}
+
+/* =========================
+   ROUTES
+========================= */
+
 export default function(app) {
+
+  app.get('/anime/home', async (_, res) => {
+
+    try {
+
+      const result =
+        await animeHome()
+
+      res.json({
+        status: true,
+        creator: 'zyraa',
+        result
+      })
+
+    } catch (e) {
+
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
+
+    }
+
+  })
 
   app.get('/anime/search', async (req, res) => {
 
-    const {
-      query
-    } = req.query
+    const { query } =
+      req.query
 
     if (!query) {
 
@@ -346,8 +541,9 @@ export default function(app) {
       const result =
         await searchAnime(query)
 
-      res.status(200).json({
+      res.json({
         status: true,
+        creator: 'zyraa',
         result
       })
 
@@ -364,9 +560,8 @@ export default function(app) {
 
   app.get('/anime/detail', async (req, res) => {
 
-    const {
-      url
-    } = req.query
+    const { url } =
+      req.query
 
     if (!url) {
 
@@ -382,8 +577,9 @@ export default function(app) {
       const result =
         await animeDetail(url)
 
-      res.status(200).json({
+      res.json({
         status: true,
+        creator: 'zyraa',
         result
       })
 
@@ -400,9 +596,8 @@ export default function(app) {
 
   app.get('/anime/episode', async (req, res) => {
 
-    const {
-      url
-    } = req.query
+    const { url } =
+      req.query
 
     if (!url) {
 
@@ -418,8 +613,61 @@ export default function(app) {
       const result =
         await episodeDetail(url)
 
-      res.status(200).json({
+      res.json({
         status: true,
+        creator: 'zyraa',
+        result
+      })
+
+    } catch (e) {
+
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
+
+    }
+
+  })
+
+  app.get('/anime/ongoing', async (req, res) => {
+
+    try {
+
+      const result =
+        await ongoingAnime(
+          req.query.page || 1
+        )
+
+      res.json({
+        status: true,
+        creator: 'zyraa',
+        result
+      })
+
+    } catch (e) {
+
+      res.status(500).json({
+        status: false,
+        error: e.message
+      })
+
+    }
+
+  })
+
+  app.get('/anime/completed', async (req, res) => {
+
+    try {
+
+      const result =
+        await completedAnime(
+          req.query.page || 1
+        )
+
+      res.json({
+        status: true,
+        creator: 'zyraa',
         result
       })
 
