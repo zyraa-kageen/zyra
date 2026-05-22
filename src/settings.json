@@ -110,6 +110,17 @@
   }
         }
       ]
+    },
+    {
+  "name": "Info",
+  "items": [
+    {
+      "name": "API Status",
+      "desc": "Get API status, uptime",
+      "path": "/api/status",
+      "status": "ready"
     }
+  ]
+}
   ]
 }
