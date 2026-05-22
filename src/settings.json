@@ -64,26 +64,6 @@
           "params": {
             "url": "Episode URL"
           }
-        },
-
-        {
-          "name": "Anime Ongoing",
-          "desc": "Get latest ongoing anime",
-          "path": "/anime/ongoing?page=",
-          "status": "ready",
-          "params": {
-            "page": "Page number (default: 1)"
-          }
-        },
-
-        {
-          "name": "Anime Completed",
-          "desc": "Get completed anime list",
-          "path": "/anime/completed?page=",
-          "status": "ready",
-          "params": {
-            "page": "Page number (default: 1)"
-          }
         }
   ]
     },
