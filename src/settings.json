@@ -117,7 +117,7 @@
     {
       "name": "API Status",
       "desc": "Get API status, uptime",
-      "path": "/src/api/status ",
+      "path": "/api/status ",
       "status": "ready"
     }
   ]
