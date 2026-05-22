@@ -21,7 +21,7 @@ export default function(app) {
         return app._router.stack.filter(layer => layer.route).length - 1;
     }
 
-    app.get('/api/status', async (req, res) => {
+    app.get('/status', async (req, res) => {
         try {
             res.status(200).json({
                 status: true,
