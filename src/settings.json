@@ -119,19 +119,15 @@
         "query": "Character name (e.g. Hu Tao)"
       }
           },
-        {
-  "name": "Pixiv Search",
-  "desc": "Search illustrations, manga, novels & popular works from Pixiv",
-  "path": "/search/pixiv?query=",
-  "status": "ready",
-  "params": {
-    "query": "Search keyword (e.g. furina)",
-    "lang": "Language (en / ja)",
-    "type": "Filter type (all / illust / manga / novel)",
-    "limit": "Limit result (default: 10)",
-    "popular": "true / false",
-    "related": "true / false"
-  }
+     {
+          "name": "Pixiv Search",
+          "desc": "Search illustrations & manga from Pixiv",
+          "path": "/search/pixiv?query= ",
+          "status": "ready",
+          "params": {
+            "query": "Search keyword (e.g. furina)"
+          }
+        }
         }
       ]
     },
