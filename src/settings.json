@@ -12,61 +12,57 @@
   },
   "categories": [
     {
-  "name": "Artificial Intelligence",
-  "items": [
-    {
-  "name": "Gemini AI",
-  "desc": "Chat with Google Gemini AI",
-  "path": "/ai/gemini?prompt= ",
-  "status": "ready",
-  "params": {
-    "prompt": "Your message to Gemini",
-    "sessionId": "Session ID for context (optional)"
-  }
-}
-  ]
+      "name": "Artificial Intelligence",
+      "items": [
+        {
+          "name": "Gemini AI",
+          "desc": "Chat with Google Gemini AI",
+          "path": "/ai/gemini?prompt= ",
+          "status": "ready",
+          "params": {
+            "prompt": "Your message to Gemini",
+            "sessionId": "Session ID for context (optional)"
+          }
+        }
+      ]
     },
-    
     {
-     "name": "Anime",
-     "items": [
+      "name": "Anime",
+      "items": [
         {
           "name": "Anime Home",
           "desc": "Get latest anime homepage",
-          "path": "/anime/home",
+          "path": "/anime/home ",
           "status": "ready"
         },
-
         {
           "name": "Anime Search",
           "desc": "Search anime from Anoboy",
-          "path": "/anime/search?query=",
+          "path": "/anime/search?query= ",
           "status": "ready",
           "params": {
             "query": "Anime title (e.g. one piece)"
           }
         },
-
         {
           "name": "Anime Detail",
-          "desc": "Get anime detail, synopsis, genre, characters & episode list",
-          "path": "/anime/detail?url=",
+          "desc": "Get anime detail, synopsis, genre & episode list",
+          "path": "/anime/detail?url= ",
           "status": "ready",
           "params": {
             "url": "Anime URL from search result"
           }
         },
-
         {
           "name": "Anime Episode",
           "desc": "Get iframe & download links",
-          "path": "/anime/episode?url=",
+          "path": "/anime/episode?url= ",
           "status": "ready",
           "params": {
             "url": "Episode URL"
           }
         }
-  ]
+      ]
     },
     {
       "name": "Random",
@@ -102,24 +98,24 @@
           }
         },
         {
-  "name": "Wuthering Waves Character",
-  "desc": "Search Wuthering Waves character info",
-  "path": "/search/wuwa?query=",
-  "status": "ready",
-  "params": {
-    "query": "Character name (e.g. Camellya, Rover, Jinhsi)"
-  }
+          "name": "Wuthering Waves",
+          "desc": "Search Wuthering Waves character info",
+          "path": "/search/wuwa? query= ",
+          "status": "ready",
+          "params": {
+            "query": "Character name (e.g. Camellya, Rover)"
+          }
         },
-          {
-      "name": "Genshin Impact",
-      "desc": "Search Genshin Impact character info",
-      "path": "/search/genshin?query= ",
-      "status": "ready",
-      "params": {
-        "query": "Character name (e.g. Hu Tao)"
-      }
-          },
-     {
+        {
+          "name": "Genshin Impact",
+          "desc": "Search Genshin Impact character info",
+          "path": "/search/genshin?query= ",
+          "status": "ready",
+          "params": {
+            "query": "Character name (e.g. Hu Tao)"
+          }
+        },
+        {
           "name": "Pixiv Search",
           "desc": "Search illustrations & manga from Pixiv",
           "path": "/search/pixiv?query= ",
@@ -128,19 +124,18 @@
             "query": "Search keyword (e.g. furina)"
           }
         }
-        
       ]
     },
     {
-  "name": "Info",
-  "items": [
-    {
-      "name": "API Status",
-      "desc": "Get API status, uptime",
-      "path": "/api/status ",
-      "status": "ready"
+      "name": "Info",
+      "items": [
+        {
+          "name": "API Status",
+          "desc": "Get API status, uptime",
+          "path": "/api/status ",
+          "status": "ready"
+        }
+      ]
     }
-  ]
-}
   ]
 }
