@@ -15,14 +15,15 @@
   "name": "Artificial Intelligence",
   "items": [
     {
-      "name": "belum tersedia",
-      "desc": "-",
-      "path": "/-/-?-= ",
-      "status": "update",
-      "params": {
-        "text": "Text prompt"
-      }
-    }
+  "name": "Gemini AI",
+  "desc": "Chat with Google Gemini AI",
+  "path": "/ai/gemini?prompt= ",
+  "status": "ready",
+  "params": {
+    "prompt": "Your message to Gemini",
+    "sessionId": "Session ID for context (optional)"
+  }
+}
   ]
     },
     
