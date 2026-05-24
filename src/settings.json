@@ -109,7 +109,16 @@
   "params": {
     "query": "Character name (e.g. Camellya, Rover, Jinhsi)"
   }
-        }
+        },
+          {
+      "name": "Genshin Impact",
+      "desc": "Search Genshin Impact character info",
+      "path": "/search/genshin?query= ",
+      "status": "ready",
+      "params": {
+        "query": "Character name (e.g. Hu Tao)"
+      }
+          }
       ]
     },
     {
